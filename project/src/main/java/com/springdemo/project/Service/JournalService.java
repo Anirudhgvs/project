@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class JournalService {
@@ -29,11 +30,9 @@ public class JournalService {
             JournalEntry savedEntry = journalEntryRepo.insert(journalEntry);
             UserEntry userEntry = userRepo.findByUserName(userName);
             userEntry.getJournalEntries().add(savedEntry);
-            userEntry.setUserName(null);
             userRepo.save(userEntry);
             return savedEntry;
         } catch (Exception e){
-            // Handle exception (logging, re-throwing, etc.)
             throw new Exception("Error occurred while creating journal entry", e);
         }
     }
@@ -42,14 +41,23 @@ public class JournalService {
         return journalEntryRepo.findAll();
     }
 
-    public Optional<JournalEntry> getEntry(ObjectId id) {
-        return journalEntryRepo.findById(id);
+    public Optional<JournalEntry> getEntryOfUser(ObjectId id, String userName) throws Exception {
+        UserEntry userEntry = userRepo.findByUserName(userName);
+        if(userEntry != null) {
+            List<JournalEntry> entries = userEntry.getJournalEntries();
+            List<JournalEntry> matchedEntryList = entries.stream().filter(e -> e.getId().toString().equals(id.toString())).collect(Collectors.toList());
+            JournalEntry matchedEntry = matchedEntryList.get(0);
+            return Optional.ofNullable(matchedEntry);
+        }else {
+            throw new Exception("Entry not found for the User");
+        }
     }
 
     public JournalEntry updateEntry(JournalEntry journalEntry1) {
         return journalEntryRepo.save(journalEntry1);
     }
 
+    @Transactional
     public void deleteEntry(ObjectId id, String userName) {
         UserEntry userEntry = userRepo.findByUserName(userName);
         List<JournalEntry> list = userEntry.getJournalEntries();
@@ -57,7 +65,6 @@ public class JournalService {
         list.remove(journalEntry);
         userEntry.setJournalEntries(list);
         userRepo.save(userEntry);
-
         journalEntryRepo.deleteById(id);
     }
 }

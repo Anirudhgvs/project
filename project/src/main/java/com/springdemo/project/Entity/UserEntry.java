@@ -25,4 +25,5 @@ public class UserEntry {
     String password;
     @DBRef
     List<JournalEntry> journalEntries = new ArrayList<>();
+    List<String> roles;
 }

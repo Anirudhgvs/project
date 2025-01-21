@@ -5,6 +5,9 @@ import com.springdemo.project.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -16,43 +19,35 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @GetMapping
-    public ResponseEntity<?> getAllUsers(){
-        try {
-            List<UserEntry> list = userService.getAllusers();
-            if (list != null && !list.isEmpty()) {
-                return new ResponseEntity<>(list, HttpStatus.OK);
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+    public ResponseEntity<?> getUser(){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<UserEntry> userEntry = userService.getByUserName(userName);
+        if(userEntry.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(userEntry, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserEntry userEntry){
-        try{
-            return new ResponseEntity<>(userService.createUser(userEntry), HttpStatus.CREATED);
-        } catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @PutMapping("/{userName}")
-    public ResponseEntity<?> updateUser(@PathVariable String userName, @RequestBody UserEntry userEntry){
+    @PutMapping
+    public ResponseEntity<?> updateUser( @RequestBody UserEntry userEntry){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<UserEntry> optionalUserEntry = userService.getByUserName(userName);
         UserEntry userEntry1 = optionalUserEntry.get();
         if(userEntry1 != null){
             userEntry1.setUserName(userEntry.getUserName());
-            userEntry1.setPassword(userEntry.getPassword());
+            userEntry1.setPassword(passwordEncoder.encode(userEntry.getPassword()));
             return new ResponseEntity<>(userService.updateUser(userEntry1), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable String id){
-        userService.deleteUser(id);
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(){
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.deleteUserByUserName(userName);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
