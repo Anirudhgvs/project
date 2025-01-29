@@ -7,6 +7,7 @@ import com.springdemo.project.Repositories.JournalEntryRepo;
 import com.springdemo.project.Repositories.UserRepo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
