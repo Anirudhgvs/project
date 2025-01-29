@@ -1,8 +1,6 @@
 package com.springdemo.project.Entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserEntry {
 
     @Id

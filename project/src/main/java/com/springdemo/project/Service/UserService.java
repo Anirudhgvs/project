@@ -23,9 +23,20 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public UserEntry createUser(UserEntry userEntry) {
+    public Boolean createUser(UserEntry userEntry) {
+        try {
+            userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
+            userEntry.setRoles(Collections.singletonList("USER"));
+            userRepo.insert(userEntry);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public UserEntry createAdminUser(UserEntry userEntry) {
         userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
-        userEntry.setRoles(Collections.singletonList("USER"));
+        userEntry.setRoles(Collections.singletonList("ADMIN"));
         return userRepo.insert(userEntry);
     }
 
