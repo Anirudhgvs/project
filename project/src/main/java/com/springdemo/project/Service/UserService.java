@@ -7,7 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,11 +36,10 @@ public class UserService {
         }
     }
 
-    public UserEntry createAdminUser(UserEntry userEntry) {
-        userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
-        userEntry.setRoles(Collections.singletonList("ADMIN"));
-        return userRepo.insert(userEntry);
-    }
+//    public UserEntry createAdminUser(UserEntry userEntry) {
+//        userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
+//        userEntry.setRoles(Collections.singletonList("ADMIN"));
+//    }
 
     public Optional<UserEntry> getByUserName(String userName) {
         return Optional.ofNullable(userRepo.findByUserName(userName));
