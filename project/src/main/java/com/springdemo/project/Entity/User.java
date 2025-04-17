@@ -27,5 +27,5 @@ public class User {
 
     String password;
 
-    List<String> roles;
+    Role role;
 }

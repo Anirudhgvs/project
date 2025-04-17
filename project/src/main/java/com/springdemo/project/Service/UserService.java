@@ -1,18 +1,20 @@
 package com.springdemo.project.Service;
 
+import com.springdemo.project.Entity.Role;
 import com.springdemo.project.Entity.User;
 import com.springdemo.project.Repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 public class UserService {
 
     @Autowired
@@ -27,7 +29,7 @@ public class UserService {
     public Boolean createUser(User userEntry) {
         try {
             userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
-            userEntry.setRoles(Collections.singletonList("USER"));
+            userEntry.setRole(Role.USER);
             userRepo.insert(userEntry);
             return true;
         } catch (Exception e){
