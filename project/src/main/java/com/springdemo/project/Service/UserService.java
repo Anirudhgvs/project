@@ -1,6 +1,6 @@
 package com.springdemo.project.Service;
 
-import com.springdemo.project.Entity.UserEntry;
+import com.springdemo.project.Entity.User;
 import com.springdemo.project.Repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.Collections;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +20,11 @@ public class UserService {
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public List<UserEntry> getAllusers() {
+    public List<User> getAllusers() {
         return userRepo.findAll();
     }
 
-    public Boolean createUser(UserEntry userEntry) {
+    public Boolean createUser(User userEntry) {
         try {
             userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
             userEntry.setRoles(Collections.singletonList("USER"));
@@ -41,15 +40,15 @@ public class UserService {
 //        userEntry.setRoles(Collections.singletonList("ADMIN"));
 //    }
 
-    public Optional<UserEntry> getByUserName(String userName) {
-        return Optional.ofNullable(userRepo.findByUserName(userName));
+    public Optional<User> getByUserName(String userName) {
+        return Optional.ofNullable(userRepo.findByUsername(userName));
     }
 
-    public Object updateUser(UserEntry userEntry1) {
+    public Object updateUser(User userEntry1) {
         return userRepo.save(userEntry1);
     }
 
     public void deleteUserByUserName(String userName) {
-        userRepo.deleteByUserName(userName);
+        userRepo.deleteByUsername(userName);
     }
 }

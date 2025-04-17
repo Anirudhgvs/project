@@ -3,11 +3,10 @@ package com.springdemo.project.Entity;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Document
@@ -16,15 +15,24 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserEntry {
+public class Task {
 
     @Id
     ObjectId id;
-    @Indexed(unique = true)
-    @NonNull
-    String userName;
-    String password;
+
+    String title;
+
+    String description;
+
+    Date dueDate;
+
+    Status status;
+
+    Priority priority;
+
     @DBRef
-    List<JournalEntry> journalEntries = new ArrayList<>();
-    List<String> roles;
+    User assignedTo;
+
+    @DBRef
+    User createdBy;
 }
