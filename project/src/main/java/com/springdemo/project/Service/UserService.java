@@ -29,7 +29,6 @@ public class UserService {
     public Boolean createUser(User userEntry) {
         try {
             userEntry.setPassword(passwordEncoder.encode(userEntry.getPassword()));
-            userEntry.setRole(Role.USER);
             userRepo.insert(userEntry);
             return true;
         } catch (Exception e){
